@@ -6,7 +6,13 @@ import { LoggerModule } from './common/middleware/logger/logger.module';
 import { SongsController } from './songs/songs.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { UsersModule } from './users/users.module';
+import { ArtistsModule } from './artists/artists.module';
 import { Song } from './songs/song.entity';
+import { User } from './users/user.entity';
+import { Artist } from './artists/artist.entity';
+import { PlaylistsModule } from './playlists/playlists.module';
+import { Playlist } from './playlists/playlist.entity';
 @Module({
   imports: [
     SongsModule,
@@ -18,10 +24,13 @@ import { Song } from './songs/song.entity';
       username: 'admin',
       password: 'admin',
       database: 'postgres',
-      entities: [Song],
+      entities: [Song, User, Artist, Playlist],
       synchronize: true,
       autoLoadEntities: true,
     }),
+    UsersModule,
+    ArtistsModule,
+    PlaylistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

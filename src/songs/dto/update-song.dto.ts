@@ -2,6 +2,7 @@ import {
   IsArray,
   IsDateString,
   IsMilitaryTime,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -9,13 +10,11 @@ import {
 export class UpdateSongDto {
   @IsString()
   @IsOptional()
-  readonly title: string;
+  readonly title;
   @IsOptional()
   @IsArray()
-  @IsString({
-    each: true,
-  })
-  readonly artists: string[];
+  @IsNumber({}, { each: true })
+  readonly artists;
   @IsDateString()
   @IsOptional()
   readonly releasedDate: Date;
