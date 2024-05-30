@@ -5,11 +5,6 @@ import { UnauthorizedException } from '@nestjs/common';
 
 export class JwtArtistGuard extends AuthGuard('jwt') {
   canActivate(context: any): boolean | Promise<boolean> | Observable<boolean> {
-    // const request = context.switchToHttp().getRequest();
-    // const payload: PayloadType = request.user;
-    // if (!payload.artistId) {
-    //   return false;
-    // }
     return super.canActivate(context);
   }
 

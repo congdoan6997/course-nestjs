@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
 @Injectable()
@@ -25,5 +25,23 @@ export class UsersService {
       throw new UnauthorizedException('Invalid credentials');
     }
     return user;
+  }
+
+  async updateSecretKey(userId: number, secret: string): Promise<UpdateResult> {
+    return await this.userRepository.update(
+      { id: userId },
+      { twoFASecret: secret, enable2FA: true },
+    );
+  }
+
+  async findById(id: number): Promise<User> {
+    return await this.userRepository.findOneBy({ id });
+  }
+
+  async disable2FA(userId: number): Promise<UpdateResult> {
+    return await this.userRepository.update(
+      { id: userId },
+      { enable2FA: false, twoFASecret: null },
+    );
   }
 }
