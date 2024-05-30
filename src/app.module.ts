@@ -1,42 +1,43 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+// service
 import { AppService } from './app.service';
+// controller
 import { AppController } from './app.controller';
 import { SongsController } from './songs/songs.controller';
-import { Song } from './songs/song.entity';
-import { User } from './users/user.entity';
-import { Artist } from './artists/artist.entity';
-import { Playlist } from './playlists/playlist.entity';
+
+// modules
 import { SongsModule } from './songs/songs.module';
 import { LoggerModule } from './common/middleware/logger/logger.module';
 import { UsersModule } from './users/users.module';
 import { ArtistsModule } from './artists/artists.module';
 import { PlaylistsModule } from './playlists/playlists.module';
 import { AuthModule } from './auth/auth.module';
-import { dataSourceOptions } from 'db/data-source';
+// seed data
+import { typeOrmAsyncConfig } from 'db/data-source';
 import { SeedModule } from './seed/seed.module';
+// configuration
+import { ConfigModule } from '@nestjs/config';
+import configuration from 'src/config/configuration';
+// validation env
+import { validate } from 'env.validation';
 @Module({
   imports: [
     SongsModule,
     LoggerModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'admin',
-      password: 'admin',
-      database: 'postgres',
-      entities: [Song, User, Artist, Playlist],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
     UsersModule,
     ArtistsModule,
     PlaylistsModule,
     AuthModule,
-    TypeOrmModule.forRoot(dataSourceOptions),
     SeedModule,
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
+    ConfigModule.forRoot({
+      envFilePath: ['.env.development', '.env.production'],
+      isGlobal: true,
+      load: [configuration],
+      validate: validate,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

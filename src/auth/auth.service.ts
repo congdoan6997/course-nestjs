@@ -3,14 +3,13 @@ import { UsersService } from 'src/users/users.service';
 import { ArtistsService } from 'src/artists/artists.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-
 import * as speakeasy from 'speakeasy';
-
 import { LoginDto } from './dto/login.dto';
 import { PayloadType } from './types/payload.type';
 import { Enable2FAType } from './types/auth.type';
 import { UpdateResult } from 'typeorm';
 import { User } from 'src/users/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +17,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private artistsService: ArtistsService,
+    private configService: ConfigService,
   ) {}
   async login(
     loginDto: LoginDto,
@@ -96,5 +96,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
     return user;
+  }
+
+  getEnvVariables() {
+    return {
+      port: this.configService.get<number>('port'),
+    };
   }
 }
