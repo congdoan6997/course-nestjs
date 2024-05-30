@@ -10,6 +10,7 @@ import { LoginDto } from './dto/login.dto';
 import { PayloadType } from './types/payload.type';
 import { Enable2FAType } from './types/auth.type';
 import { UpdateResult } from 'typeorm';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -87,5 +88,13 @@ export class AuthService {
     } catch (e) {
       throw new UnauthorizedException('Invalid 2FA token');
     }
+  }
+
+  async validateApiKey(apiKey: string): Promise<User> {
+    const user = await this.usersService.findByApiKey(apiKey);
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    return user;
   }
 }

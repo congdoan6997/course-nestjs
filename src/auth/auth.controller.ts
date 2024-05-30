@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { User } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
@@ -8,6 +15,7 @@ import { Enable2FAType } from './types/auth.type';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { UpdateResult } from 'typeorm';
 import { ValidateTokenDto } from './dto/validate-token.dto';
+import { BearerAuthGuard } from './bearer-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -51,5 +59,15 @@ export class AuthController {
       req.user.userId,
       validateTokenDto.token,
     );
+  }
+
+  @Get('profile')
+  @UseGuards(BearerAuthGuard)
+  getProfile(@Request() req) {
+    delete req.user.password;
+    return {
+      user: req.user,
+      message: 'Authenticated with api key',
+    };
   }
 }
