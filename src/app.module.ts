@@ -1,19 +1,21 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { SongsModule } from './songs/songs.module';
-import { LoggerModule } from './common/middleware/logger/logger.module';
-import { SongsController } from './songs/songs.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { UsersModule } from './users/users.module';
-import { ArtistsModule } from './artists/artists.module';
+import { AppService } from './app.service';
+import { AppController } from './app.controller';
+import { SongsController } from './songs/songs.controller';
 import { Song } from './songs/song.entity';
 import { User } from './users/user.entity';
 import { Artist } from './artists/artist.entity';
-import { PlaylistsModule } from './playlists/playlists.module';
 import { Playlist } from './playlists/playlist.entity';
+import { SongsModule } from './songs/songs.module';
+import { LoggerModule } from './common/middleware/logger/logger.module';
+import { UsersModule } from './users/users.module';
+import { ArtistsModule } from './artists/artists.module';
+import { PlaylistsModule } from './playlists/playlists.module';
 import { AuthModule } from './auth/auth.module';
+import { dataSourceOptions } from 'db/data-source';
+import { SeedModule } from './seed/seed.module';
 @Module({
   imports: [
     SongsModule,
@@ -33,6 +35,8 @@ import { AuthModule } from './auth/auth.module';
     ArtistsModule,
     PlaylistsModule,
     AuthModule,
+    TypeOrmModule.forRoot(dataSourceOptions),
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
