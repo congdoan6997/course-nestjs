@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 // import { SeedService } from './seed/seed.service';
 import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 declare const module: any;
 async function bootstrap() {
@@ -10,6 +11,25 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   // const seedService = app.get(SeedService);
   // await seedService.seed();
+  const config = new DocumentBuilder()
+    .setTitle('Spotify Clone')
+    .setDescription('Spotify Clone API description')
+    .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'JWT',
+        description: 'Enter JWT token',
+        in: 'header',
+      },
+      'JWT-auth',
+    )
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port');
   await app.listen(port);
